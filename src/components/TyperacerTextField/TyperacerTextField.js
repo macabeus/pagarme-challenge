@@ -36,9 +36,9 @@ class TyperacerTextField extends Component {
     super(props);
 
     const text = 'Hey, you need to type this!';
+    this.textArray = text.split(' ');
 
     this.state = {
-      textArray: text.split(' '),
       textTypedHistory: [],
       lastWordIsIncorrect: false
     }
@@ -52,7 +52,7 @@ class TyperacerTextField extends Component {
     if (newValue[newValue.length - 1] !== ' ') { return }
 
     //
-    const textArray = this.state.textArray;
+    const textArray = this.textArray;
     const textTypedHistory = this.state.textTypedHistory;
 
     const newValueSplited = newValue
@@ -85,7 +85,7 @@ class TyperacerTextField extends Component {
     return (
       <div className="App">
         <TyperacerText
-          textArray={this.state.textArray}
+          textArray={this.textArray}
           wordsTypedCount={this.state.textTypedHistory.length}
           lastWordIsIncorrect={this.state.lastWordIsIncorrect} />
         <textarea onChange={this.handleChange} />
