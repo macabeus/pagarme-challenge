@@ -55,14 +55,14 @@ class TyperacerTextField extends Component {
     const textArray = this.textArray;
     const textTypedHistory = this.state.textTypedHistory;
 
-    const newValueSplited = newValue
+    const newValueWords = newValue
       .split(' ')
       .filter(word => word.length > 0);
 
-    if (newValueSplited.length > textTypedHistory.length) {
+    if (newValueWords.length > textTypedHistory.length) {
       // if a new word was is typed, then check if the new word is correct
 
-      const newWord = newValueSplited[newValueSplited.length - 1];
+      const newWord = newValueWords[newValueWords.length - 1];
 
       if (newWord === textArray[textTypedHistory.length]) {
         // the new word is correct
