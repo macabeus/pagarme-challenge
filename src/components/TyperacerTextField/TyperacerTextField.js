@@ -3,17 +3,30 @@ import React, { Component } from 'react';
 function TyperacerText(props) {
   const textArray = props.textArray;
 
+  // Get typed words
   const textTyped = textArray
     .slice(0, props.wordsTypedCount)
     .join(' ');
 
-  const textNotTyped = textArray
-    .slice(props.wordsTypedCount, textArray.length)
-    .join(' ');
+  // Get *not* typed words
+  let wrongTypedWord;
+  let textNotTyped;
+  if (props.lastWordIsIncorrect === true) {
+    wrongTypedWord = textArray[props.wordsTypedCount];
 
+    textNotTyped = textArray
+      .slice(props.wordsTypedCount + 1, textArray.length)
+      .join(' ');
+  } else {
+    textNotTyped = textArray
+      .slice(props.wordsTypedCount, textArray.length)
+      .join(' ');
+  }
+
+  //
   return (
     <p>
-      <strong>{textTyped}</strong> {textNotTyped}
+      <strong>{textTyped}</strong> <span style={{color: 'red'}}>{wrongTypedWord}</span> {textNotTyped}
     </p>
   );
 }
@@ -26,15 +39,19 @@ class TyperacerTextField extends Component {
 
     this.state = {
       textArray: text.split(' '),
-      textTypedHistory: []
+      textTypedHistory: [],
+      lastWordIsIncorrect: false
     }
 
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(event) {
-    // check if a new word as typed
+    // check if a new word as typed - that is, a space was typed
     const newValue = event.target.value;
+    if (newValue[newValue.length - 1] !== ' ') { return }
+
+    //
     const textArray = this.state.textArray;
     const textTypedHistory = this.state.textTypedHistory;
 
@@ -48,8 +65,17 @@ class TyperacerTextField extends Component {
       const newWord = newValueSplited[newValueSplited.length - 1];
 
       if (newWord === textArray[textTypedHistory.length]) {
+        // the new word is correct
+
         this.setState({
-          textTypedHistory: [...this.state.textTypedHistory, newWord]
+          textTypedHistory: [...this.state.textTypedHistory, newWord],
+          lastWordIsIncorrect: false
+        });
+      } else {
+        // the new word is wrong
+
+        this.setState({
+          lastWordIsIncorrect: true
         });
       }
     }
@@ -58,7 +84,10 @@ class TyperacerTextField extends Component {
   render() {
     return (
       <div className="App">
-        <TyperacerText textArray={this.state.textArray} wordsTypedCount={this.state.textTypedHistory.length} />
+        <TyperacerText
+          textArray={this.state.textArray}
+          wordsTypedCount={this.state.textTypedHistory.length}
+          lastWordIsIncorrect={this.state.lastWordIsIncorrect} />
         <textarea onChange={this.handleChange} />
       </div>
     );
