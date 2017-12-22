@@ -47,11 +47,7 @@ class TyperacerTextField extends Component {
   }
 
   handleChange(event) {
-    // check if a new word as typed - that is, a space was typed
     const newValue = event.target.value;
-    if (newValue[newValue.length - 1] !== ' ') { return }
-
-    //
     const textArray = this.textArray;
     const textTypedHistory = this.state.textTypedHistory;
 
@@ -71,7 +67,7 @@ class TyperacerTextField extends Component {
           textTypedHistory: [...this.state.textTypedHistory, newWord],
           lastWordIsIncorrect: false
         });
-      } else {
+      } else if (newValue[newValue.length - 1] === ' ') {
         // the new word is wrong
 
         this.setState({
