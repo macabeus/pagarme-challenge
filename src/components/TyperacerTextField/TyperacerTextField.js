@@ -70,7 +70,7 @@ class KeystrokesPerMinutes extends Component {
     });
   }
 
-  render() {
+  kpmLastMinute() {
     const textTypedHistory = this.state.textTypedHistory;
 
     const lastMinute = moment().subtract(1, 'minute');
@@ -79,9 +79,42 @@ class KeystrokesPerMinutes extends Component {
       .map(t => t.word);
     const textTypedPerMinute = textTypedHistoryFiltered.length / 60;
 
+    return textTypedPerMinute;
+  }
+
+  kpmMaximum() {
+    const textTypedHistory = this.state.textTypedHistory;
+    if (textTypedHistory.length === 0) { return 0 }
+
+    // Count how many words was type in each full minute intervals
+    const secondInitial = textTypedHistory[0].moment.second();
+    const secondFinal = moment().second();
+
+    const intervals = Math.floor(
+      (secondFinal - secondInitial) / 60
+    );
+
+    const intervalsScore = textTypedHistory.reduce((result, v) => {
+      const interval = Math.floor((v.moment.second() - secondInitial) / 60);
+
+      result[0][interval] += 1;
+
+      return result
+    }, [ Array.apply(null, {length: intervals + 1}).map(() => 0) ]);
+
+    // Get the maximum words by minute, and divide by 60 seconds
+    const maximumAbsolute = Math.max(...intervalsScore[0])
+    const maximumPerMinute = maximumAbsolute / 60;
+
+    //
+    return maximumPerMinute
+  }
+
+  render() {
     return (
       <p>
-        {textTypedPerMinute.toFixed(2)} words per minute
+        <strong>{this.kpmLastMinute().toFixed(2)}</strong> words per minute currently.
+        Your the best value is <strong>{this.kpmMaximum().toFixed(2)}</strong> words per minute.
       </p>
     )
   }
