@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import moment from 'moment';
+import MiniSignal from 'mini-signals';
 
 function TyperacerText(props) {
   const textArray = props.textArray;
@@ -31,11 +33,67 @@ function TyperacerText(props) {
   );
 }
 
+class KeystrokesPerMinutes extends Component {
+  constructor(props) {
+    super(props);
+
+    this.kpmSignal = props.kpmSignal;
+
+    this.state = {
+      seconds: 0,
+      textTypedHistory: []
+    };
+
+    this.updateTextTypedHistory = this.updateTextTypedHistory.bind(this);
+    this.tick = this.tick.bind(this);
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(this.tick, 1000);
+    this.binding = this.kpmSignal.add(this.updateTextTypedHistory);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+    this.binding.detach();
+  }
+
+  updateTextTypedHistory(textTypedHistory) {
+    this.setState({
+      textTypedHistory: textTypedHistory
+    });
+  }
+
+  tick() {
+    this.setState({
+      seconds: this.state.seconds + 1
+    });
+  }
+
+  render() {
+    const textTypedHistory = this.state.textTypedHistory;
+
+    const lastMinute = moment().subtract(1, 'minute');
+    const textTypedHistoryFiltered = textTypedHistory
+      .filter(t => lastMinute.isBefore(t.moment))
+      .map(t => t.word);
+    const textTypedPerMinute = textTypedHistoryFiltered.length / 60;
+
+    return (
+      <p>
+        {textTypedPerMinute.toFixed(2)} words per minute
+      </p>
+    )
+  }
+}
+
 class TyperacerTextField extends Component {
   constructor(props) {
     super(props);
 
-    const text = 'Hey, you need to type this!';
+    this.kpmSignal = new MiniSignal();
+
+    const text = 'Hey, you need to type this very very long text! And now!';
     this.textArray = text.split(' ');
 
     this.state = {
@@ -63,8 +121,11 @@ class TyperacerTextField extends Component {
       if (newWord === textArray[textTypedHistory.length]) {
         // the new word is correct
 
+        const updatedTextTypedHistory = [...this.state.textTypedHistory, {word: newWord, moment: moment()}];
+
+        this.kpmSignal.dispatch(updatedTextTypedHistory);
         this.setState({
-          textTypedHistory: [...this.state.textTypedHistory, newWord],
+          textTypedHistory: updatedTextTypedHistory,
           lastWordIsIncorrect: false
         });
       } else if (newValue[newValue.length - 1] === ' ') {
@@ -84,7 +145,10 @@ class TyperacerTextField extends Component {
           textArray={this.textArray}
           wordsTypedCount={this.state.textTypedHistory.length}
           lastWordIsIncorrect={this.state.lastWordIsIncorrect} />
+
         <textarea onChange={this.handleChange} />
+
+        <KeystrokesPerMinutes kpmSignal={this.kpmSignal} />
       </div>
     );
   }
