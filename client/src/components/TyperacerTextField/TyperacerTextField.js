@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import MiniSignal from 'mini-signals';
+import io from 'socket.io-client';
 
 function TyperacerText(props) {
   const textArray = props.textArray;
@@ -31,6 +32,48 @@ function TyperacerText(props) {
       <strong>{textTyped}</strong> <span style={{color: 'red'}}>{wrongTypedWord}</span> {textNotTyped}
     </p>
   );
+}
+
+class Members extends Component {
+  constructor(props) {
+    super(props);
+
+    this.roomName = props.roomname;
+    this.userName = props.username;
+
+    this.state = {
+      users: []
+    }
+  }
+
+  componentDidMount() {
+    this.socket = io('http://localhost:3001');
+
+    this.socket.on('connected', () => {
+      console.log('socket connected');
+      this.socket.emit('join room', this.roomName, this.userName)
+    });
+
+    this.socket.on('room users', (users) => {
+      this.updateMembersList(users);
+    });
+  }
+
+  componentWillUnmount() {
+    this.socket.disconnect()
+  }
+
+  updateMembersList(users) {
+    this.setState({
+      users: users
+    });
+  }
+
+  render() {
+    return (
+      <p><strong>Members in room: </strong> {this.state.users.join(', ')}</p>
+    )
+  }
 }
 
 class KeystrokesPerMinutes extends Component {
@@ -182,6 +225,8 @@ class TyperacerTextField extends Component {
         <textarea onChange={this.handleChange} />
 
         <KeystrokesPerMinutes kpmSignal={this.kpmSignal} />
+
+        <Members roomname={this.props.match.params.roomname} username={this.props.match.params.username}/>
       </div>
     );
   }
