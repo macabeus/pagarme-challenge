@@ -58,7 +58,7 @@ class Members extends Component {
 
   render() {
     const users = Object.entries(this.state.users);
-    const usersAndScore = users.map(k => `${k[0]} (${k[1].toFixed(2)})`);
+    const usersAndScore = users.map(k => `${k[0]} (${k[1].kpmMaximum.toFixed(2)})`);
 
     return (
       <p><strong>Members in room: </strong> {usersAndScore.join(', ')}</p>
@@ -103,17 +103,23 @@ class KeystrokesPerMinutes extends Component {
       seconds: this.state.seconds + 1
     });
 
-    this.socket.updateKpm(this.kpmMaximum());
+    this.socket.updateKeystrokesInLastMinute(this.keystrokesInLastMinute());
+    this.socket.updateKpmMaximum(this.kpmMaximum());
   }
 
-  kpmLastMinute() {
+  keystrokesInLastMinute() {
     const textTypedHistory = this.state.textTypedHistory;
 
     const lastMinute = moment().subtract(1, 'minute');
     const textTypedHistoryFiltered = textTypedHistory
       .filter(t => lastMinute.isBefore(t.moment))
       .map(t => t.word);
-    const textTypedPerMinute = textTypedHistoryFiltered.length / 60;
+
+    return textTypedHistoryFiltered.length;
+  }
+
+  kpmInLastMinute() {
+    const textTypedPerMinute = this.keystrokesInLastMinute() / 60;
 
     return textTypedPerMinute;
   }
@@ -149,7 +155,7 @@ class KeystrokesPerMinutes extends Component {
   render() {
     return (
       <p>
-        <strong>{this.kpmLastMinute().toFixed(2)}</strong> words per minute currently.
+        <strong>{this.kpmInLastMinute().toFixed(2)}</strong> words per minute currently.
         Your the best value is <strong>{this.kpmMaximum().toFixed(2)}</strong> words per minute.
       </p>
     )

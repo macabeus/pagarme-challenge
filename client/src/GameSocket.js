@@ -16,8 +16,12 @@ class GameSocket {
     });
   }
 
-  updateKpm(newScore) {
-    this.socket.emit('update kpm', newScore);
+  updateKeystrokesInLastMinute(newValue) {
+    this.socket.emit('update kpm in last minute', newValue);
+  }
+
+  updateKpmMaximum(newScore) {
+    this.socket.emit('update kpm maximum', newScore);
   }
 }
 

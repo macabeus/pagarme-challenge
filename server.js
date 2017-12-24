@@ -10,6 +10,13 @@ app.get('/foo', (req, res) => {
 
 //
 
+class User {
+  constructor() {
+    this.keystrokesInLastMinute = 0;
+    this.kpmMaximum = 0;
+  }
+}
+
 class Room {
   constructor() {
     this.rooms = {}
@@ -20,18 +27,23 @@ class Room {
       this.rooms[roomName] = {};
     }
 
-    this.rooms[roomName][userName] = 0;
+    this.rooms[roomName][userName] = new User();
   }
 
   removeUserFromRoom(roomName, userName) {
     delete this.rooms[roomName][userName];
   }
 
-  updateScore(roomName, userName, newScore) {
-    const bestScore = this.rooms[roomName][userName];
+  updateKeystrokesInLastMinute(roomName, userName, newValue) {
+    const userTarget = this.rooms[roomName][userName];
+    userTarget.keystrokesInLastMinute = newValue;
+  }
 
-    if (bestScore < newScore) {
-      this.rooms[roomName][userName] = newScore;
+  updateKpmMaximum(roomName, userName, newScore) {
+    const userTarget = this.rooms[roomName][userName];
+
+    if (userTarget.kpmMaximum < newScore) {
+      userTarget.kpmMaximum = newScore;
     }
   }
 
@@ -55,8 +67,13 @@ io.on('connection', (socket) => {
     room.notifyListOfUsersInRoom(roomName);
 
 
-    socket.on('update kpm', (newScore) => {
-      room.updateScore(roomName, userName, newScore);
+    socket.on('update kpm in last minute', (newValue) => {
+      room.updateKeystrokesInLastMinute(roomName, userName, newValue);
+    })
+
+
+    socket.on('update kpm maximum', (newScore) => {
+      room.updateKpmMaximum(roomName, userName, newScore);
       room.notifyListOfUsersInRoom(roomName);
     })
 
