@@ -75,16 +75,17 @@ class KeystrokesPerMinutes extends Component {
 
     this.state = {
       seconds: 0,
-      textTypedHistory: []
+      textTypedHistory: [],
+      textTypedCountByMinute: {}
     };
 
-    this.updateTextTypedHistory = this.updateTextTypedHistory.bind(this);
+    this.updateTextTyped = this.updateTextTyped.bind(this);
     this.tick = this.tick.bind(this);
   }
 
   componentDidMount() {
     this.interval = setInterval(this.tick, 1000);
-    this.binding = this.kpmSignal.add(this.updateTextTypedHistory);
+    this.binding = this.kpmSignal.add(this.updateTextTyped);
   }
 
   componentWillUnmount() {
@@ -92,9 +93,21 @@ class KeystrokesPerMinutes extends Component {
     this.binding.detach();
   }
 
-  updateTextTypedHistory(textTypedHistory) {
+  updateTextTyped(textTypedHistory) {
+    // Update the counter of how many words was typed in each minute
+    const textTypedCountByMinute = this.state.textTypedCountByMinute;
+
+    const currentMinute = Math.floor(this.state.seconds / 60);
+    if (textTypedCountByMinute[currentMinute] === undefined) {
+      textTypedCountByMinute[currentMinute] = 0;
+    }
+
+    textTypedCountByMinute[currentMinute] += 1;
+
+    //
     this.setState({
-      textTypedHistory: textTypedHistory
+      textTypedHistory: textTypedHistory,
+      textTypedCountGroupedByMinute: textTypedCountByMinute
     });
   }
 
@@ -125,31 +138,16 @@ class KeystrokesPerMinutes extends Component {
   }
 
   kpmMaximum() {
-    const textTypedHistory = this.state.textTypedHistory;
-    if (textTypedHistory.length === 0) { return 0 }
+    if (Object.keys(this.state.textTypedCountByMinute).length === 0) { return 0 }
 
-    // Count how many words was type in each full minute intervals
-    const secondInitial = textTypedHistory[0].moment.second();
-    const secondFinal = moment().second();
+    const textTypedCountByMinute = this.state.textTypedCountByMinute;
 
-    const intervals = Math.floor(
-      (secondFinal - secondInitial) / 60
-    );
+    const textTypedPerMinute = Object.values(textTypedCountByMinute)
+      .map(keystrokesCount => keystrokesCount / 60)
 
-    const intervalsScore = textTypedHistory.reduce((result, v) => {
-      const interval = Math.floor((v.moment.second() - secondInitial) / 60);
+    const maximumPerMinute = Math.max(...textTypedPerMinute);
 
-      result[0][interval] += 1;
-
-      return result
-    }, [ Array.apply(null, {length: intervals + 1}).map(() => 0) ]);
-
-    // Get the maximum words by minute, and divide by 60 seconds
-    const maximumAbsolute = Math.max(...intervalsScore[0])
-    const maximumPerMinute = maximumAbsolute / 60;
-
-    //
-    return maximumPerMinute
+    return maximumPerMinute;
   }
 
   render() {
