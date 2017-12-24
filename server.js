@@ -15,46 +15,55 @@ class User {
     this.keystrokesInLastMinute = 0;
     this.kpmMaximum = 0;
   }
+
+  updateKeystrokesInLastMinute(newValue) {
+    this.keystrokesInLastMinute = newValue;
+  }
+
+  updateKpmMaximum(newScore) {
+    if (this.kpmMaximum < newScore) {
+      this.kpmMaximum = newScore;
+    }
+  }
 }
 
-class Room {
+class RoomsManager {
   constructor() {
     this.rooms = {}
   }
 
   createRoomOrJoinIn(roomName, userName) {
     if (this.rooms[roomName] === undefined) {
-      this.rooms[roomName] = {};
+      this.rooms[roomName] = new Room();
     }
 
-    this.rooms[roomName][userName] = new User();
-  }
-
-  removeUserFromRoom(roomName, userName) {
-    delete this.rooms[roomName][userName];
-  }
-
-  updateKeystrokesInLastMinute(roomName, userName, newValue) {
-    const userTarget = this.rooms[roomName][userName];
-    userTarget.keystrokesInLastMinute = newValue;
-  }
-
-  updateKpmMaximum(roomName, userName, newScore) {
-    const userTarget = this.rooms[roomName][userName];
-
-    if (userTarget.kpmMaximum < newScore) {
-      userTarget.kpmMaximum = newScore;
-    }
-  }
-
-  notifyListOfUsersInRoom(roomName) {
-    io.sockets.in(roomName).emit(
-      'room users', this.rooms[roomName]
-    );
+    this.rooms[roomName].joinUser(userName);
   }
 }
 
-let room = new Room();
+class Room {
+  constructor() {
+    this.users = {}
+  }
+
+  joinUser(userName) {
+    this.users[userName] = new User();
+  }
+
+  removeUser(userName) {
+    delete this.users[userName];
+  }
+}
+
+let roomManager = new RoomsManager();
+
+//
+
+function notifyNewListOfUsersInRoom(roomName) {
+  io.sockets.in(roomName).emit(
+    'room users', roomManager.rooms[roomName].users
+  );
+}
 
 io.on('connection', (socket) => {
   socket.emit('connected');
@@ -63,24 +72,35 @@ io.on('connection', (socket) => {
     socket.join(roomName);
 
 
-    room.createRoomOrJoinIn(roomName, userName);
-    room.notifyListOfUsersInRoom(roomName);
+    roomManager
+      .createRoomOrJoinIn(roomName, userName);
+    notifyNewListOfUsersInRoom(roomName);
 
 
     socket.on('update kpm in last minute', (newValue) => {
-      room.updateKeystrokesInLastMinute(roomName, userName, newValue);
+      roomManager
+        .rooms[roomName]
+        .users[userName]
+        .updateKeystrokesInLastMinute(newValue);
     })
 
 
     socket.on('update kpm maximum', (newScore) => {
-      room.updateKpmMaximum(roomName, userName, newScore);
-      room.notifyListOfUsersInRoom(roomName);
+      roomManager
+        .rooms[roomName]
+        .users[userName]
+        .updateKpmMaximum(newScore);
+
+      notifyNewListOfUsersInRoom(roomName);
     })
 
 
     socket.on('disconnect', () => {
-      room.removeUserFromRoom(roomName, userName);
-      room.notifyListOfUsersInRoom(roomName);
+      roomManager
+        .rooms[roomName]
+        .removeUser(userName);
+
+      notifyNewListOfUsersInRoom(roomName);
     });
   });
 });
