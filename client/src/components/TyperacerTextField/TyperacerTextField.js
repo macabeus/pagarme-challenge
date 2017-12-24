@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import MiniSignal from 'mini-signals';
-import io from 'socket.io-client';
+import GameSocket from '../../GameSocket';
 
 function TyperacerText(props) {
   const textArray = props.textArray;
@@ -38,29 +38,16 @@ class Members extends Component {
   constructor(props) {
     super(props);
 
-    this.roomName = props.roomname;
-    this.userName = props.username;
+    this.socket = props.socket;
+    this.socket.hookUpdateMembersList = this.updateMembersList.bind(this);
 
     this.state = {
       users: []
     }
   }
 
-  componentDidMount() {
-    this.socket = io('http://localhost:3001');
-
-    this.socket.on('connected', () => {
-      console.log('socket connected');
-      this.socket.emit('join room', this.roomName, this.userName)
-    });
-
-    this.socket.on('room users', (users) => {
-      this.updateMembersList(users);
-    });
-  }
-
   componentWillUnmount() {
-    this.socket.disconnect()
+    this.socket.hookUpdateMembersList = undefined;
   }
 
   updateMembersList(users) {
@@ -70,8 +57,11 @@ class Members extends Component {
   }
 
   render() {
+    const users = Object.entries(this.state.users);
+    const usersAndScore = users.map(k => `${k[0]} (${k[1].toFixed(2)})`);
+
     return (
-      <p><strong>Members in room: </strong> {this.state.users.join(', ')}</p>
+      <p><strong>Members in room: </strong> {usersAndScore.join(', ')}</p>
     )
   }
 }
@@ -81,6 +71,7 @@ class KeystrokesPerMinutes extends Component {
     super(props);
 
     this.kpmSignal = props.kpmSignal;
+    this.socket = props.socket;
 
     this.state = {
       seconds: 0,
@@ -111,6 +102,8 @@ class KeystrokesPerMinutes extends Component {
     this.setState({
       seconds: this.state.seconds + 1
     });
+
+    this.socket.updateKpm(this.kpmMaximum());
   }
 
   kpmLastMinute() {
@@ -168,6 +161,7 @@ class TyperacerTextField extends Component {
     super(props);
 
     this.kpmSignal = new MiniSignal();
+    this.socket = new GameSocket(this.props.match.params.roomname, this.props.match.params.username);
 
     const text = 'Hey, you need to type this very very long text! And now!';
     this.textArray = text.split(' ');
@@ -178,6 +172,10 @@ class TyperacerTextField extends Component {
     }
 
     this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentWillUnmount() {
+    this.socket.socket.disconnect();
   }
 
   handleChange(event) {
@@ -224,9 +222,9 @@ class TyperacerTextField extends Component {
 
         <textarea onChange={this.handleChange} />
 
-        <KeystrokesPerMinutes kpmSignal={this.kpmSignal} />
+        <KeystrokesPerMinutes socket={this.socket} kpmSignal={this.kpmSignal} />
 
-        <Members roomname={this.props.match.params.roomname} username={this.props.match.params.username}/>
+        <Members socket={this.socket} />
       </div>
     );
   }

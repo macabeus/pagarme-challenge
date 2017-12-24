@@ -17,15 +17,22 @@ class Room {
 
   createRoomOrJoinIn(roomName, userName) {
     if (this.rooms[roomName] === undefined) {
-      this.rooms[roomName] = [];
+      this.rooms[roomName] = {};
     }
 
-    this.rooms[roomName].push(userName);
+    this.rooms[roomName][userName] = 0;
   }
 
   removeUserFromRoom(roomName, userName) {
-    const index = this.rooms[roomName].indexOf(userName);
-    this.rooms[roomName].splice(index, 1);
+    delete this.rooms[roomName][userName];
+  }
+
+  updateScore(roomName, userName, newScore) {
+    const bestScore = this.rooms[roomName][userName];
+
+    if (bestScore < newScore) {
+      this.rooms[roomName][userName] = newScore;
+    }
   }
 
   notifyListOfUsersInRoom(roomName) {
@@ -43,8 +50,16 @@ io.on('connection', (socket) => {
   socket.on('join room', (roomName, userName) => {
     socket.join(roomName);
 
+
     room.createRoomOrJoinIn(roomName, userName);
     room.notifyListOfUsersInRoom(roomName);
+
+
+    socket.on('update kpm', (newScore) => {
+      room.updateScore(roomName, userName, newScore);
+      room.notifyListOfUsersInRoom(roomName);
+    })
+
 
     socket.on('disconnect', () => {
       room.removeUserFromRoom(roomName, userName);
