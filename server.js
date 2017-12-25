@@ -4,6 +4,7 @@ const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const moment = require('moment');
+const gameTextGenerator = require('./GameTextGenerator');
 
 app.get('/room/:roomname/status', (req, res) => {
   const roomTarget = roomManager.rooms[req.params.roomname];
@@ -59,13 +60,9 @@ class RoomsManager {
 
 class Room {
   constructor() {
-    this.users = {}
-    this.momentCreated = moment()
-    this.text = 'Ao integrar com a API do Pagar.me, você pode criar transações a partir dos pedidos feitos na sua plataforma. É possível usar os mecanismos de cartão de crédito e boleto para efetuar os pagamentos. Os itens a seguir explicam de forma mais detalhada como criar uma transação de cada tipo:\n' +
-      '\n' +
-      'Capturar os dados do cliente: Obtendo os dados do Cartão\n' +
-      'Criar a transação de Cartão de crédito ou Boleto bancário\n' +
-      'É importante também entender os conceitos a seguir, para que a sua operação esteja alinhada com todos os detalhes do nosso produto.';
+    this.users = {};
+    this.momentCreated = moment();
+    this.text = gameTextGenerator.getRandomTextFromJson();
   }
 
   joinUser(userName) {
