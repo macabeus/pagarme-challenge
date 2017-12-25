@@ -4,7 +4,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './index.css';
 
 import App from './components/App/App';
-import TyperacerTextField from './components/TyperacerTextField/TyperacerTextField';
+import TyperacerTextField from './components/Room/TyperacerTextField';
 import NotFound from './components/NotFound/index';
 
 ReactDOM.render(
