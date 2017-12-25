@@ -9,7 +9,7 @@
     "moment": "2.20.1"
   },
   "scripts": {
-    "start": "concurrently \"yarn server\" \"cd client && yarn start\"",
+    "start": "concurrently \"yarn server\" \"cd ../client && yarn start\"",
     "server": "nodemon server.js",
     "client": "cd client && yarn start",
     "lint": "eslint ."
