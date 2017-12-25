@@ -87,10 +87,10 @@ class KeystrokesPerMinutes extends Component {
 
   render() {
     return (
-      <p>
-        <strong>{this.kpmInLastMinute().toFixed(2)}</strong> words per minute currently.
-        Your the best value is <strong>{this.kpmMaximum().toFixed(2)}</strong> words per minute.
-      </p>
+      <div>
+        <p><strong>{this.kpmInLastMinute().toFixed(2)}</strong> words per minute currently.</p>
+        <p>Your the best value is <strong>{this.kpmMaximum().toFixed(2)}</strong> words per minute.</p>
+      </div>
     )
   }
 }

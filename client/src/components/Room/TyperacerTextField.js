@@ -7,6 +7,8 @@ import TyperacerText from './TyperacerText';
 import Members from './Members';
 import KeystrokesPerMinutes from './KeystrokesPerMinutes';
 
+import { Grid, Col, Panel, FormControl } from 'react-bootstrap';
+
 class TyperacerTextField extends Component {
   constructor(props) {
     super(props);
@@ -14,7 +16,11 @@ class TyperacerTextField extends Component {
     this.kpmSignal = new MiniSignal();
     this.socket = new GameSocket(this.props.match.params.roomname, this.props.match.params.username);
 
-    const text = 'Hey, you need to type this very very long text! And now!';
+    const text = 'Ao integrar com a API do Pagar.me, você pode criar transações a partir dos pedidos feitos na sua plataforma. É possível usar os mecanismos de cartão de crédito e boleto para efetuar os pagamentos. Os itens a seguir explicam de forma mais detalhada como criar uma transação de cada tipo:\n' +
+      '\n' +
+      'Capturar os dados do cliente: Obtendo os dados do Cartão\n' +
+      'Criar a transação de Cartão de crédito ou Boleto bancário\n' +
+      'É importante também entender os conceitos a seguir, para que a sua operação esteja alinhada com todos os detalhes do nosso produto.';
     this.textArray = text.split(' ');
 
     this.state = {
@@ -65,18 +71,36 @@ class TyperacerTextField extends Component {
 
   render() {
     return (
-      <div className="App">
-        <TyperacerText
-          textArray={this.textArray}
-          wordsTypedCount={this.state.textTypedHistory.length}
-          lastWordIsIncorrect={this.state.lastWordIsIncorrect} />
+      <Grid fluid={true}>
+        <Col xs={4}>
+          <Panel header="Text to type">
+            <TyperacerText
+              textArray={this.textArray}
+              wordsTypedCount={this.state.textTypedHistory.length}
+              lastWordIsIncorrect={this.state.lastWordIsIncorrect} />
+          </Panel>
+        </Col>
 
-        <textarea onChange={this.handleChange} />
+        <Col xs={4}>
+          <Panel header="Your text">
+            <FormControl componentClass="textarea" onChange={this.handleChange} />
+          </Panel>
+        </Col>
 
-        <KeystrokesPerMinutes socket={this.socket} kpmSignal={this.kpmSignal} />
+        <Col xs={4}>
+            <Col xs={12}>
+              <Panel header="Your score">
+                <KeystrokesPerMinutes socket={this.socket} kpmSignal={this.kpmSignal} />
+              </Panel>
+            </Col>
 
-        <Members socket={this.socket} />
-      </div>
+            <Col xs={12}>
+              <Panel header="Ranking">
+                <Members socket={this.socket} />
+              </Panel>
+            </Col>
+        </Col>
+      </Grid>
     );
   }
 }

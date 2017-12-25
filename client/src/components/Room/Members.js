@@ -27,7 +27,7 @@ class Members extends Component {
     const usersAndScore = users.map(k => `${k[0]} (${k[1].kpmMaximum.toFixed(2)})`);
 
     return (
-      <p><strong>Members in room: </strong> {usersAndScore.join(', ')}</p>
+      <ul>{usersAndScore.map((value) => <li key={value}>{value}</li>)}</ul>
     )
   }
 }
