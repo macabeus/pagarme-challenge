@@ -14,6 +14,15 @@ class GameSocket {
         this.hookUpdateMembersList(users)
       }
     });
+
+    this.socket.on('join in room', (data) => {
+      if (this.hookJoinInRoom !== undefined) {
+        const isNewRoom = data.isNewRoom;
+        const roomText = data.roomText;
+
+        this.hookJoinInRoom(isNewRoom, roomText)
+      }
+    });
   }
 
   updateKeystrokesInLastMinute(newValue) {

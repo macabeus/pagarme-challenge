@@ -9,21 +9,18 @@ import KeystrokesPerMinutes from './KeystrokesPerMinutes';
 
 import { Grid, Col, Panel, FormControl } from 'react-bootstrap';
 
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+
 class TyperacerTextField extends Component {
   constructor(props) {
     super(props);
 
     this.kpmSignal = new MiniSignal();
     this.socket = new GameSocket(this.props.match.params.roomname, this.props.match.params.username);
-
-    const text = 'Ao integrar com a API do Pagar.me, você pode criar transações a partir dos pedidos feitos na sua plataforma. É possível usar os mecanismos de cartão de crédito e boleto para efetuar os pagamentos. Os itens a seguir explicam de forma mais detalhada como criar uma transação de cada tipo:\n' +
-      '\n' +
-      'Capturar os dados do cliente: Obtendo os dados do Cartão\n' +
-      'Criar a transação de Cartão de crédito ou Boleto bancário\n' +
-      'É importante também entender os conceitos a seguir, para que a sua operação esteja alinhada com todos os detalhes do nosso produto.';
-    this.textArray = text.split(' ');
+    this.socket.hookJoinInRoom = this.joinInRoom.bind(this);
 
     this.state = {
+      text: '',
       textTypedHistory: [],
       lastWordIsIncorrect: false
     }
@@ -33,11 +30,24 @@ class TyperacerTextField extends Component {
 
   componentWillUnmount() {
     this.socket.socket.disconnect();
+    this.socket.hookNewRoom = undefined;
+  }
+
+  joinInRoom(isNewRoom, roomText) {
+    if (isNewRoom) {
+      NotificationManager.info('You created a new room!');
+    } else {
+      NotificationManager.info('You joined in a room!');
+    }
+
+    this.setState({
+      text: roomText
+    })
   }
 
   handleChange(event) {
     const newValue = event.target.value;
-    const textArray = this.textArray;
+    const textArray = this.state.text.split(' ');
     const textTypedHistory = this.state.textTypedHistory;
 
     const newValueWords = newValue
@@ -75,7 +85,7 @@ class TyperacerTextField extends Component {
         <Col xs={4}>
           <Panel header="Text to type">
             <TyperacerText
-              textArray={this.textArray}
+              text={this.state.text}
               wordsTypedCount={this.state.textTypedHistory.length}
               lastWordIsIncorrect={this.state.lastWordIsIncorrect} />
           </Panel>
@@ -100,6 +110,8 @@ class TyperacerTextField extends Component {
               </Panel>
             </Col>
         </Col>
+
+        <NotificationContainer/>
       </Grid>
     );
   }

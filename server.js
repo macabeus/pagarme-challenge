@@ -48,12 +48,12 @@ class RoomsManager {
     this.rooms = {}
   }
 
-  createRoomOrJoinIn(roomName, userName) {
-    if (this.rooms[roomName] === undefined) {
-      this.rooms[roomName] = new Room();
-    }
+  checkIfRoomExists(roomName) {
+    return this.rooms[roomName] !== undefined
+  }
 
-    this.rooms[roomName].joinUser(userName);
+  createNewRoom(roomName) {
+    this.rooms[roomName] = new Room();
   }
 }
 
@@ -61,6 +61,11 @@ class Room {
   constructor() {
     this.users = {}
     this.momentCreated = moment()
+    this.text = 'Ao integrar com a API do Pagar.me, você pode criar transações a partir dos pedidos feitos na sua plataforma. É possível usar os mecanismos de cartão de crédito e boleto para efetuar os pagamentos. Os itens a seguir explicam de forma mais detalhada como criar uma transação de cada tipo:\n' +
+      '\n' +
+      'Capturar os dados do cliente: Obtendo os dados do Cartão\n' +
+      'Criar a transação de Cartão de crédito ou Boleto bancário\n' +
+      'É importante também entender os conceitos a seguir, para que a sua operação esteja alinhada com todos os detalhes do nosso produto.';
   }
 
   joinUser(userName) {
@@ -143,6 +148,13 @@ function notifyNewListOfUsersInRoom(roomName) {
   );
 }
 
+function notifyJoinInRoom(socket, isNewRoom, roomText) {
+  socket.emit('join in room', {
+    isNewRoom: isNewRoom,
+    roomText: roomText
+  });
+}
+
 io.on('connection', (socket) => {
   socket.emit('connected');
 
@@ -150,10 +162,18 @@ io.on('connection', (socket) => {
     socket.join(roomName);
 
 
-    roomManager
-      .createRoomOrJoinIn(roomName, userName);
-    notifyNewListOfUsersInRoom(roomName);
+    const roomExists = roomManager.checkIfRoomExists(roomName);
+    if (roomExists === false) {
+      roomManager
+        .createNewRoom(roomName);
+    }
 
+    roomManager
+      .rooms[roomName]
+      .joinUser(userName);
+
+    notifyJoinInRoom(socket, !roomExists, roomManager.rooms[roomName].text);
+    notifyNewListOfUsersInRoom(roomName);
 
     socket.on('update kpm in last minute', (newValue) => {
       roomManager

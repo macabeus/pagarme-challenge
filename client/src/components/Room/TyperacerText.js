@@ -1,7 +1,7 @@
 import React from 'react';
 
 function TyperacerText(props) {
-  const textArray = props.textArray;
+  const textArray = props.text.split(' ');
 
   // Get typed words
   const textTyped = textArray
