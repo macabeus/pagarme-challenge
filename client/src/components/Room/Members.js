@@ -17,6 +17,10 @@ class Members extends Component {
   }
 
   updateMembersList(users) {
+    const newUserList = users;
+    const oldUserList = this.state.users;
+    this.props.onUpdateMemberList(oldUserList, newUserList);
+
     this.setState({
       users: users
     });

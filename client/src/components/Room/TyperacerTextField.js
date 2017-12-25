@@ -6,10 +6,9 @@ import GameSocket from '../../GameSocket';
 import TyperacerText from './TyperacerText';
 import Members from './Members';
 import KeystrokesPerMinutes from './KeystrokesPerMinutes';
+import NotificationGame from './NotificationGame';
 
 import { Grid, Col, Panel, FormControl } from 'react-bootstrap';
-
-import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 class TyperacerTextField extends Component {
   constructor(props) {
@@ -17,7 +16,7 @@ class TyperacerTextField extends Component {
 
     this.kpmSignal = new MiniSignal();
     this.socket = new GameSocket(this.props.match.params.roomname, this.props.match.params.username);
-    this.socket.hookJoinInRoom = this.joinInRoom.bind(this);
+    this.socket.hookJoinInRoom = this.handleJoinInRoom.bind(this);
 
     this.state = {
       text: '',
@@ -26,6 +25,7 @@ class TyperacerTextField extends Component {
     }
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleUpdatedUserList = this.handleUpdatedUserList.bind(this);
   }
 
   componentWillUnmount() {
@@ -33,16 +33,16 @@ class TyperacerTextField extends Component {
     this.socket.hookNewRoom = undefined;
   }
 
-  joinInRoom(isNewRoom, roomText) {
-    if (isNewRoom) {
-      NotificationManager.info('You created a new room!');
-    } else {
-      NotificationManager.info('You joined in a room!');
-    }
+  handleJoinInRoom(isNewRoom, roomText) {
+    NotificationGame.notificationJoinInRoom(isNewRoom);
 
     this.setState({
       text: roomText
     })
+  }
+
+  handleUpdatedUserList(oldUsersList, newUsersList) {
+    this.refs.notification.notificationUpdatedUserList(oldUsersList, newUsersList);
   }
 
   handleChange(event) {
@@ -106,12 +106,12 @@ class TyperacerTextField extends Component {
 
             <Col xs={12}>
               <Panel header="Ranking">
-                <Members socket={this.socket} />
+                <Members socket={this.socket} onUpdateMemberList={this.handleUpdatedUserList} />
               </Panel>
             </Col>
         </Col>
 
-        <NotificationContainer/>
+        <NotificationGame ref='notification'/>
       </Grid>
     );
   }
