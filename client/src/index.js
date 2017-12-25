@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './index.css';
 
+import 'react-notifications/lib/notifications.css';
+
 import App from './components/App/App';
 import TyperacerTextField from './components/Room/TyperacerTextField';
 import NotFound from './components/NotFound/index';
