@@ -18,7 +18,7 @@ app.get('/room/:roomname/status', (req, res) => {
     active_users: roomTarget.activeUsersCount(),
     keystrokes: roomTarget.keystrokesTotalInLastMinute(),
     active_since: roomTarget.activeSince(),
-    counter: 0, // todo: needs create a system to start a game
+    counter: roomTarget.secondsRemaining(),
     below_mean: roomTarget.belowMean(),
     ranking: roomTarget.ranking(),
     last_minute_lead: roomTarget.lastMinuteLead()
@@ -133,6 +133,16 @@ class Room {
         }
       }, {userName: null, keystrokesInLastMinute: 0})
       .userName
+  }
+
+  secondsRemaining() {
+    const secondsRemaining = this.momentFinish.diff(moment(), 'seconds');
+
+    if (secondsRemaining > 0) {
+      return secondsRemaining
+    } else {
+      return 0
+    }
   }
 }
 
