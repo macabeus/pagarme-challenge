@@ -23,11 +23,13 @@ class TyperacerTextField extends Component {
       text: '',
       textTypedHistory: [],
       lastWordIsIncorrect: false,
-      momentFinish: undefined
+      momentFinish: undefined,
+      timeout: false
     }
 
     this.handleChange = this.handleChange.bind(this);
     this.handleUpdatedUserList = this.handleUpdatedUserList.bind(this);
+    this.handleGameTimeout = this.handleGameTimeout.bind(this);
   }
 
   componentWillUnmount() {
@@ -54,6 +56,17 @@ class TyperacerTextField extends Component {
     }
 
     return this.state.momentFinish.diff(moment(), 'seconds')
+  }
+
+  handleGameTimeout() {
+    // is necessary this "if" because the ReactCountdownClock component call multiple times this callback
+    if (this.state.timeout === false) {
+      NotificationGame.notificationTimeout();
+
+      this.setState({
+        timeout: true
+      })
+    }
   }
 
   handleChange(event) {
@@ -104,7 +117,7 @@ class TyperacerTextField extends Component {
 
         <Col xs={4}>
           <Panel header="Your text">
-            <FormControl componentClass="textarea" onChange={this.handleChange} />
+            <FormControl componentClass="textarea" onChange={this.handleChange} disabled={this.state.timeout} />
           </Panel>
         </Col>
 
@@ -117,7 +130,12 @@ class TyperacerTextField extends Component {
 
           <Col xs={12}>
             <Panel header="Time">
-              <ReactCountdownClock size={100} seconds={this.gameSecondsRemaining()} maxSeconds={300} />
+              <ReactCountdownClock
+                paused={this.state.text === '' || this.state.timeout}
+                size={100}
+                seconds={this.gameSecondsRemaining()}
+                maxSeconds={300}
+                onComplete={this.handleGameTimeout} />
             </Panel>
           </Col>
 

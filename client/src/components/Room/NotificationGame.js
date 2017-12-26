@@ -37,6 +37,10 @@ class NotificationGame extends Component {
     }
   }
 
+  static notificationTimeout() {
+    NotificationManager.warning('Timeout!')
+  }
+
   render() {
     return (
       <NotificationContainer/>
