@@ -5,6 +5,7 @@ class User {
   constructor() {
     this.keystrokesInLastMinute = 0;
     this.kpmMaximum = 0;
+    this.online = true;
   }
 
   updateKeystrokesInLastMinute(newValue) {

@@ -35,11 +35,17 @@ class Members extends Component {
     }
   }
 
+  static renderLabelOffline(online) {
+    if (online === false) {
+      return <Label bsStyle="default">Offline</Label>
+    }
+  }
+
   render() {
     const users = Object
       .entries(this.state.users)
       .map(user => {
-        return { name: user[0], score: user[1].kpmMaximum.toFixed(2) }
+        return { name: user[0], online: user[1].online, score: user[1].kpmMaximum.toFixed(2) }
       })
       .sort((userA, userB) => {
         return userA.score < userB.score
@@ -49,7 +55,9 @@ class Members extends Component {
       <ul>
         {
           users.map((user) => {
-            return <li key={user.name}>{user.name} ({user.score}) {this.renderLabelYou(user.name)}</li>
+            return <li key={user.name}>
+              {user.name} ({user.score}) {this.renderLabelYou(user.name)} {Members.renderLabelOffline(user.online)}
+            </li>
           })
         }
       </ul>

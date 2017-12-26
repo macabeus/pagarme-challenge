@@ -16,12 +16,15 @@ class Room {
     this.users[userName] = new User();
   }
 
-  removeUser(userName) {
-    delete this.users[userName];
+  setUserAsOffline(userName) {
+    this.users[userName].online = false;
   }
 
   activeUsersCount() {
-    return Object.entries(this.users).length;
+    return Object
+      .entries(this.users)
+      .filter(user => user[1].online)
+      .length
   }
 
   keystrokesTotalInLastMinute() {

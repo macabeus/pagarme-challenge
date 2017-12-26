@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
       roomManager
         .rooms[roomName]
-        .removeUser(userName);
+        .setUserAsOffline(userName);
 
       notifyNewListOfUsersInRoom(roomName);
     });
