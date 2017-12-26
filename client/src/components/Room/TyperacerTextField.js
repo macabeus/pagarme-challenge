@@ -14,7 +14,9 @@ class TyperacerTextField extends Component {
   constructor(props) {
     super(props);
 
-    this.socket = new GameSocket(this.props.match.params.roomname, this.props.match.params.username);
+    const roomname = this.props.match.params.roomname;
+    this.username = this.props.match.params.username;
+    this.socket = new GameSocket(roomname, this.username);
     this.socket.hookJoinInRoom = this.handleJoinInRoom.bind(this);
 
     this.state = {
@@ -122,7 +124,7 @@ class TyperacerTextField extends Component {
 
           <Col xs={12}>
             <Panel header="Ranking">
-              <Members socket={this.socket} onUpdateMemberList={this.handleUpdatedUserList} />
+              <Members socket={this.socket} username={this.username} onUpdateMemberList={this.handleUpdatedUserList} />
             </Panel>
           </Col>
         </Col>

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 
+import { Label } from 'react-bootstrap';
+
 class Members extends Component {
   constructor(props) {
     super(props);
 
+    this.username = props.username;
     this.socket = props.socket;
     this.socket.hookUpdateMembersList = this.updateMembersList.bind(this);
 
@@ -26,6 +29,12 @@ class Members extends Component {
     });
   }
 
+  renderLabelYou(username) {
+    if (username === this.username) {
+      return <Label bsStyle="primary">You</Label>
+    }
+  }
+
   render() {
     const users = Object
       .entries(this.state.users)
@@ -40,7 +49,7 @@ class Members extends Component {
       <ul>
         {
           users.map((user) => {
-            return <li key={user.name}>{user.name} ({user.score})</li>
+            return <li key={user.name}>{user.name} ({user.score}) {this.renderLabelYou(user.name)}</li>
           })
         }
       </ul>
