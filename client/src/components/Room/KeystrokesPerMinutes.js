@@ -5,7 +5,6 @@ class KeystrokesPerMinutes extends Component {
   constructor(props) {
     super(props);
 
-    this.kpmSignal = props.kpmSignal;
     this.socket = props.socket;
 
     this.state = {
@@ -14,22 +13,21 @@ class KeystrokesPerMinutes extends Component {
       textTypedCountByMinute: {}
     };
 
-    this.updateTextTyped = this.updateTextTyped.bind(this);
     this.tick = this.tick.bind(this);
   }
 
   componentDidMount() {
     this.interval = setInterval(this.tick, 1000);
-    this.binding = this.kpmSignal.add(this.updateTextTyped);
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
-    this.binding.detach();
   }
 
-  updateTextTyped(textTypedHistory) {
+  componentWillReceiveProps(nextProps) {
     // Update the counter of how many words was typed in each minute
+    if (nextProps.textTypedHistory.length === this.state.textTypedHistory.length) { return }
+
     const textTypedCountByMinute = this.state.textTypedCountByMinute;
 
     const currentMinute = Math.floor(this.state.seconds / 60);
@@ -41,7 +39,7 @@ class KeystrokesPerMinutes extends Component {
 
     //
     this.setState({
-      textTypedHistory: textTypedHistory,
+      textTypedHistory: nextProps.textTypedHistory,
       textTypedCountGroupedByMinute: textTypedCountByMinute
     });
   }

@@ -10,7 +10,6 @@
     "react-router-dom": "4.2.2",
     "moment": "2.20.1",
     "moment-duration-format": "2.1.0",
-    "mini-signals": "1.2.0",
     "socket.io-client": "2.0.4",
     "react-bootstrap": "0.31.5",
     "react-notifications": "1.4.3"

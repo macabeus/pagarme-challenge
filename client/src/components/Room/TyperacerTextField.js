@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import MiniSignal from 'mini-signals';
 import GameSocket from '../../GameSocket';
 
 import TyperacerText from './TyperacerText';
@@ -15,7 +14,6 @@ class TyperacerTextField extends Component {
   constructor(props) {
     super(props);
 
-    this.kpmSignal = new MiniSignal();
     this.socket = new GameSocket(this.props.match.params.roomname, this.props.match.params.username);
     this.socket.hookJoinInRoom = this.handleJoinInRoom.bind(this);
 
@@ -77,7 +75,6 @@ class TyperacerTextField extends Component {
 
         const updatedTextTypedHistory = [...this.state.textTypedHistory, {word: newWord, moment: moment()}];
 
-        this.kpmSignal.dispatch(updatedTextTypedHistory);
         this.setState({
           textTypedHistory: updatedTextTypedHistory,
           lastWordIsIncorrect: false
@@ -113,7 +110,7 @@ class TyperacerTextField extends Component {
         <Col xs={4}>
           <Col xs={12}>
             <Panel header="Your score">
-              <KeystrokesPerMinutes socket={this.socket} kpmSignal={this.kpmSignal} />
+              <KeystrokesPerMinutes socket={this.socket} textTypedHistory={this.state.textTypedHistory} />
             </Panel>
           </Col>
 
