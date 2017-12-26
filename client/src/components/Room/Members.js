@@ -27,11 +27,23 @@ class Members extends Component {
   }
 
   render() {
-    const users = Object.entries(this.state.users);
-    const usersAndScore = users.map(k => `${k[0]} (${k[1].kpmMaximum.toFixed(2)})`);
+    const users = Object
+      .entries(this.state.users)
+      .map(user => {
+        return { name: user[0], score: user[1].kpmMaximum.toFixed(2) }
+      })
+      .sort((userA, userB) => {
+        return userA.score < userB.score
+      })
 
     return (
-      <ul>{usersAndScore.map((value) => <li key={value}>{value}</li>)}</ul>
+      <ul>
+        {
+          users.map((user) => {
+            return <li key={user.name}>{user.name} ({user.score})</li>
+          })
+        }
+      </ul>
     )
   }
 }
