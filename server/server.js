@@ -62,7 +62,7 @@ class Room {
   constructor() {
     this.users = {};
     this.momentCreated = moment();
-    this.momentFinish = this.momentCreated.add(5, 'minutes');
+    this.momentFinish = moment().add(5, 'minutes');
     this.text = gameTextGenerator.getRandomTextFromJson();
   }
 
