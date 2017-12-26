@@ -12,7 +12,8 @@
     "mini-signals": "1.2.0",
     "socket.io-client": "2.0.4",
     "react-bootstrap": "0.31.5",
-    "react-notifications": "1.4.3"
+    "react-notifications": "1.4.3",
+    "react-countdown-clock": "https://github.com/macabeus/react-countdown-clock"
   },
   "scripts": {
     "start": "react-scripts start",
