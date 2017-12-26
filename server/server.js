@@ -160,7 +160,7 @@ function notifyJoinInRoom(socket, isNewRoom, room) {
   socket.emit('join in room', {
     isNewRoom: isNewRoom,
     roomText: room.text,
-    momentFinish: room.momentFinish
+    secondsRemaining: room.secondsRemaining()
   });
 }
 

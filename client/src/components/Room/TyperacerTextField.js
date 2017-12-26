@@ -7,9 +7,9 @@ import TyperacerText from './TyperacerText';
 import Members from './Members';
 import KeystrokesPerMinutes from './KeystrokesPerMinutes';
 import NotificationGame from './NotificationGame';
+import Countdown from './Countdown';
 
 import { Grid, Col, Panel, FormControl } from 'react-bootstrap';
-import ReactCountdownClock from 'react-countdown-clock';
 
 class TyperacerTextField extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class TyperacerTextField extends Component {
       text: '',
       textTypedHistory: [],
       lastWordIsIncorrect: false,
-      momentFinish: undefined,
+      secondsInitial: 0,
       timeout: false
     }
 
@@ -37,12 +37,12 @@ class TyperacerTextField extends Component {
     this.socket.hookNewRoom = undefined;
   }
 
-  handleJoinInRoom(isNewRoom, roomText, momentFinish) {
+  handleJoinInRoom(isNewRoom, roomText, secondsRemaining) {
     NotificationGame.notificationJoinInRoom(isNewRoom);
 
     this.setState({
       text: roomText,
-      momentFinish: momentFinish
+      secondsInitial: secondsRemaining
     })
   }
 
@@ -50,23 +50,12 @@ class TyperacerTextField extends Component {
     this.refs.notification.notificationUpdatedUserList(oldUsersList, newUsersList);
   }
 
-  gameSecondsRemaining() {
-    if (this.state.momentFinish === undefined) {
-      return 0;
-    }
-
-    return this.state.momentFinish.diff(moment(), 'seconds')
-  }
-
   handleGameTimeout() {
-    // is necessary this "if" because the ReactCountdownClock component call multiple times this callback
-    if (this.state.timeout === false) {
-      NotificationGame.notificationTimeout();
+    NotificationGame.notificationTimeout();
 
-      this.setState({
-        timeout: true
-      })
-    }
+    this.setState({
+      timeout: true
+    })
   }
 
   handleChange(event) {
@@ -130,12 +119,7 @@ class TyperacerTextField extends Component {
 
           <Col xs={12}>
             <Panel header="Time">
-              <ReactCountdownClock
-                paused={this.state.text === '' || this.state.timeout}
-                size={100}
-                seconds={this.gameSecondsRemaining()}
-                maxSeconds={300}
-                onComplete={this.handleGameTimeout} />
+              <Countdown secondsInitial={this.state.secondsInitial} onTimeout={this.handleGameTimeout} />
             </Panel>
           </Col>
 
