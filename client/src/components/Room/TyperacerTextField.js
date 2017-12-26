@@ -9,6 +9,7 @@ import KeystrokesPerMinutes from './KeystrokesPerMinutes';
 import NotificationGame from './NotificationGame';
 
 import { Grid, Col, Panel, FormControl } from 'react-bootstrap';
+import ReactCountdownClock from 'react-countdown-clock';
 
 class TyperacerTextField extends Component {
   constructor(props) {
@@ -21,7 +22,8 @@ class TyperacerTextField extends Component {
     this.state = {
       text: '',
       textTypedHistory: [],
-      lastWordIsIncorrect: false
+      lastWordIsIncorrect: false,
+      momentFinish: undefined
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -33,16 +35,25 @@ class TyperacerTextField extends Component {
     this.socket.hookNewRoom = undefined;
   }
 
-  handleJoinInRoom(isNewRoom, roomText) {
+  handleJoinInRoom(isNewRoom, roomText, momentFinish) {
     NotificationGame.notificationJoinInRoom(isNewRoom);
 
     this.setState({
-      text: roomText
+      text: roomText,
+      momentFinish: momentFinish
     })
   }
 
   handleUpdatedUserList(oldUsersList, newUsersList) {
     this.refs.notification.notificationUpdatedUserList(oldUsersList, newUsersList);
+  }
+
+  gameSecondsRemaining() {
+    if (this.state.momentFinish === undefined) {
+      return 0;
+    }
+
+    return this.state.momentFinish.diff(moment(), 'seconds')
   }
 
   handleChange(event) {
@@ -98,17 +109,23 @@ class TyperacerTextField extends Component {
         </Col>
 
         <Col xs={4}>
-            <Col xs={12}>
-              <Panel header="Your score">
-                <KeystrokesPerMinutes socket={this.socket} kpmSignal={this.kpmSignal} />
-              </Panel>
-            </Col>
+          <Col xs={12}>
+            <Panel header="Your score">
+              <KeystrokesPerMinutes socket={this.socket} kpmSignal={this.kpmSignal} />
+            </Panel>
+          </Col>
 
-            <Col xs={12}>
-              <Panel header="Ranking">
-                <Members socket={this.socket} onUpdateMemberList={this.handleUpdatedUserList} />
-              </Panel>
-            </Col>
+          <Col xs={12}>
+            <Panel header="Time">
+              <ReactCountdownClock size={100} seconds={this.gameSecondsRemaining()} maxSeconds={300} />
+            </Panel>
+          </Col>
+
+          <Col xs={12}>
+            <Panel header="Ranking">
+              <Members socket={this.socket} onUpdateMemberList={this.handleUpdatedUserList} />
+            </Panel>
+          </Col>
         </Col>
 
         <NotificationGame ref='notification'/>

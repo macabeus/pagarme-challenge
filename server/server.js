@@ -62,6 +62,7 @@ class Room {
   constructor() {
     this.users = {};
     this.momentCreated = moment();
+    this.momentFinish = this.momentCreated.add(5, 'minutes');
     this.text = gameTextGenerator.getRandomTextFromJson();
   }
 
@@ -145,10 +146,11 @@ function notifyNewListOfUsersInRoom(roomName) {
   );
 }
 
-function notifyJoinInRoom(socket, isNewRoom, roomText) {
+function notifyJoinInRoom(socket, isNewRoom, room) {
   socket.emit('join in room', {
     isNewRoom: isNewRoom,
-    roomText: roomText
+    roomText: room.text,
+    momentFinish: room.momentFinish
   });
 }
 
@@ -169,7 +171,7 @@ io.on('connection', (socket) => {
       .rooms[roomName]
       .joinUser(userName);
 
-    notifyJoinInRoom(socket, !roomExists, roomManager.rooms[roomName].text);
+    notifyJoinInRoom(socket, !roomExists, roomManager.rooms[roomName]);
     notifyNewListOfUsersInRoom(roomName);
 
     socket.on('update kpm in last minute', (newValue) => {

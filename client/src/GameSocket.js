@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import moment from 'moment';
 
 class GameSocket {
   constructor(roomName, userName) {
@@ -19,8 +20,9 @@ class GameSocket {
       if (this.hookJoinInRoom !== undefined) {
         const isNewRoom = data.isNewRoom;
         const roomText = data.roomText;
+        const momentFinish = moment(data.momentFinish);
 
-        this.hookJoinInRoom(isNewRoom, roomText)
+        this.hookJoinInRoom(isNewRoom, roomText, momentFinish)
       }
     });
   }
