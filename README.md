@@ -28,7 +28,14 @@ Instale as dependências do projeto:
 > yarn install
 ```
 
-Executar o projeto:
+Teste
+
+```
+> cd /server
+> yarn test
+```
+
+Execute o projeto:
 
 ```
 > cd /server
