@@ -1,6 +1,6 @@
 import React from 'react';
 
-function NotFound() {
+function NotFoundMessage() {
   return (
     <div>
       <h1>
@@ -10,4 +10,4 @@ function NotFound() {
   );
 }
 
-export default NotFound;
+export default NotFoundMessage;
