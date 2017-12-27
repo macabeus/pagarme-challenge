@@ -46,6 +46,11 @@ class TyperacerTextField extends Component {
     const userTextLength = userText.length - 1;
     const newCharacter = userText[userTextLength];
 
+    if (keystrokesHistory.length === userText.length) {
+      // The user already wrote all text
+      return
+    }
+    
     const updatedKeystrokesHistory = keystrokesHistory.slice(0, userTextLength);
     updatedKeystrokesHistory[userTextLength] = {
       character: newCharacter,
