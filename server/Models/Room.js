@@ -12,6 +12,10 @@ class Room {
     this.text = gameTextGenerator.getRandomTextFromJson();
   }
 
+  /**
+   * Create a new user in the specified room. If this user already exists in this room, is recreated.
+   * @param {string} userName
+   */
   joinUser(userName) {
     this.users[userName] = new User();
   }
