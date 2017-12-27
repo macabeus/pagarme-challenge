@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import GameSocket from '../../GameSocket';
 
-import TyperacerText from './TyperacerText';
+import RoomText from './RoomText';
 import Members from './Members';
 import KeystrokesPerMinutes from './KeystrokesPerMinutes';
 import NotificationGame from './NotificationGame';
@@ -71,7 +71,7 @@ class RoomPanels extends Component {
       <Grid fluid={true}>
         <Col xs={4}>
           <Panel header="Text to type">
-            <TyperacerText
+            <RoomText
               text={this.state.text}
               keystrokeHistory={this.state.keystrokeHistory} />
           </Panel>

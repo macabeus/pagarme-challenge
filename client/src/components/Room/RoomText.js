@@ -1,7 +1,7 @@
 import React from 'react';
 import { zip_longest } from 'zip-array';
 
-function TyperacerText(props) {
+function RoomText(props) {
   const textChars = props.text.split('');
   const keystrokeHistory = props.keystrokeHistory;
 
@@ -34,4 +34,4 @@ function TyperacerText(props) {
   );
 }
 
-export default TyperacerText;
+export default RoomText;
