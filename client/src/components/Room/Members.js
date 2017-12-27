@@ -45,7 +45,7 @@ class Members extends Component {
     const users = Object
       .entries(this.state.users)
       .map(user => {
-        return { name: user[0], online: user[1].online, score: user[1].kpmMaximum.toFixed(2) }
+        return { name: user[0], online: user[1].online, score: user[1].kpmMaximum }
       })
       .sort((userA, userB) => {
         return userA.score < userB.score
