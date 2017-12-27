@@ -1,32 +1,35 @@
 import React from 'react';
+import { zip_longest } from 'zip-array';
 
 function TyperacerText(props) {
-  const textArray = props.text.split(' ');
+  const textCharacters = props.text.split('');
+  const keystrokeHistory = props.keystrokeHistory;
 
-  // Get typed words
-  const textTyped = textArray
-    .slice(0, props.wordsTypedCount)
-    .join(' ');
+  const textHighlight = zip_longest(textCharacters, keystrokeHistory).map((charAndHistory, index) => {
+    const char = charAndHistory[0];
+    const history = charAndHistory[1];
 
-  // Get *not* typed words
-  let wrongTypedWord;
-  let textNotTyped;
-  if (props.lastWordIsIncorrect === true) {
-    wrongTypedWord = textArray[props.wordsTypedCount];
+    if (history === undefined) {
+      return <span key={index}>{char}</span>
 
-    textNotTyped = textArray
-      .slice(props.wordsTypedCount + 1, textArray.length)
-      .join(' ');
-  } else {
-    textNotTyped = textArray
-      .slice(props.wordsTypedCount, textArray.length)
-      .join(' ');
-  }
+    } else if (char === history.character) {
+      if (char === ' ') {
+        return <span key={index} style={{backgroundColor: 'green'}}>{char}</span>
+      } else {
+        return <span key={index} style={{color: 'green'}}>{char}</span>
+      }
+    } else {
+      if (char === ' ') {
+        return <span key={index} style={{backgroundColor: 'red'}}>{char}</span>
+      } else {
+        return <span key={index} style={{color: 'red'}}>{char}</span>
+      }
+    }
+  })
 
-  //
   return (
     <p>
-      <strong>{textTyped}</strong> <span style={{color: 'red'}}>{wrongTypedWord}</span> {textNotTyped}
+      {textHighlight}
     </p>
   );
 }

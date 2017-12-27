@@ -12,8 +12,7 @@ class TyperacerTextField extends Component {
 
     this.state = {
       text: '',
-      textTypedHistory: [],
-      lastWordIsIncorrect: false,
+      keystrokeHistory: [],
       enable: false
     }
 
@@ -30,51 +29,29 @@ class TyperacerTextField extends Component {
     if (this.state.text !== nextProps.text) {
       this.setState({
         text: nextProps.text,
-        textTypedHistory: [],
-        lastWordIsIncorrect: false
+        keystrokeHistory: []
       })
     }
 
-    if (
-      (this.state.textTypedHistory.length !== nextState.textTypedHistory.length) ||
-      (this.state.lastWordIsIncorrect !== nextState.lastWordIsIncorrect)
-    ) {
-
-      this.hookOnChange(nextState.textTypedHistory, nextState.lastWordIsIncorrect)
+    if (this.state.keystrokeHistory.length !== nextState.keystrokeHistory.length) {
+      this.hookOnChange(nextState.keystrokeHistory)
     }
   }
 
   handleChange(event) {
-    const newValue = event.target.value;
-    const textArray = this.state.text.split(' ');
-    const textTypedHistory = this.state.textTypedHistory;
+    const userText = event.target.value;
+    const userTextLength = userText.length - 1;
+    const newCharacter = userText[userTextLength];
+    const keystrokesHistory = this.state.keystrokeHistory;
 
-    const newValueWords = newValue
-      .split(' ')
-      .filter(word => word.length > 0);
+    const updatedKeystrokesHistory = keystrokesHistory.slice(0, userTextLength);
+    updatedKeystrokesHistory[userTextLength] = {character: newCharacter, moment: moment()}
 
-    if (newValueWords.length > textTypedHistory.length) {
-      // if a new word was is typed, then check if the new word is correct
+    this.setState({
+      keystrokeHistory: updatedKeystrokesHistory
+    });
 
-      const newWord = newValueWords[newValueWords.length - 1];
-
-      if (newWord === textArray[textTypedHistory.length]) {
-        // the new word is correct
-
-        const updatedTextTypedHistory = [...this.state.textTypedHistory, {word: newWord, moment: moment()}];
-
-        this.setState({
-          textTypedHistory: updatedTextTypedHistory,
-          lastWordIsIncorrect: false
-        });
-      } else if (newValue[newValue.length - 1] === ' ') {
-        // the new word is wrong
-
-        this.setState({
-          lastWordIsIncorrect: true
-        });
-      }
-    }
+    console.log(updatedKeystrokesHistory);
   }
 
   render() {

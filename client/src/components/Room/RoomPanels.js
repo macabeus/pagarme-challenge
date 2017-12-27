@@ -25,8 +25,7 @@ class RoomPanels extends Component {
       running: false,
       text: '',
       secondsInitial: 0,
-      textTypedHistory: [],
-      lastWordIsIncorrect: false
+      keystrokeHistory: []
     }
 
     this.handleUpdatedUserList = this.handleUpdatedUserList.bind(this);
@@ -53,10 +52,9 @@ class RoomPanels extends Component {
     this.refs.notification.notificationUpdatedUserList(oldUsersList, newUsersList);
   }
 
-  handleOnTyperacerTextFieldChange(textTypedHistory, lastWordIsIncorrect) {
+  handleOnTyperacerTextFieldChange(keystrokeHistory) {
     this.setState({
-      textTypedHistory: textTypedHistory,
-      lastWordIsIncorrect: lastWordIsIncorrect
+      keystrokeHistory: keystrokeHistory
     })
   }
 
@@ -75,8 +73,7 @@ class RoomPanels extends Component {
           <Panel header="Text to type">
             <TyperacerText
               text={this.state.text}
-              wordsTypedCount={this.state.textTypedHistory.length}
-              lastWordIsIncorrect={this.state.lastWordIsIncorrect} />
+              keystrokeHistory={this.state.keystrokeHistory} />
           </Panel>
         </Col>
 
@@ -94,7 +91,7 @@ class RoomPanels extends Component {
             <Panel header="Your score">
               <KeystrokesPerMinutes
                 socket={this.socket}
-                textTypedHistory={this.state.textTypedHistory} />
+                keystrokeHistory={this.state.keystrokeHistory} />
             </Panel>
           </Col>
 

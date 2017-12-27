@@ -9,8 +9,8 @@ class KeystrokesPerMinutes extends Component {
 
     this.state = {
       seconds: 0,
-      textTypedHistory: [],
-      textTypedCountByMinute: {}
+      keystrokeHistory: [],
+      keystrokeCountByMinute: {}
     };
 
     this.tick = this.tick.bind(this);
@@ -26,21 +26,21 @@ class KeystrokesPerMinutes extends Component {
 
   componentWillReceiveProps(nextProps) {
     // Update the counter of how many words was typed in each minute
-    if (nextProps.textTypedHistory.length === this.state.textTypedHistory.length) { return }
+    if (nextProps.keystrokeHistory.length === this.state.keystrokeHistory.length) { return }
 
-    const textTypedCountByMinute = this.state.textTypedCountByMinute;
+    const keystrokeCountByMinute = this.state.keystrokeCountByMinute;
 
     const currentMinute = Math.floor(this.state.seconds / 60);
-    if (textTypedCountByMinute[currentMinute] === undefined) {
-      textTypedCountByMinute[currentMinute] = 0;
+    if (keystrokeCountByMinute[currentMinute] === undefined) {
+      keystrokeCountByMinute[currentMinute] = 0;
     }
 
-    textTypedCountByMinute[currentMinute] += 1;
+    keystrokeCountByMinute[currentMinute] += 1;
 
     //
     this.setState({
-      textTypedHistory: nextProps.textTypedHistory,
-      textTypedCountGroupedByMinute: textTypedCountByMinute
+      keystrokeHistory: nextProps.keystrokeHistory,
+      keystrokeCountByMinute: keystrokeCountByMinute
     });
   }
 
@@ -54,31 +54,31 @@ class KeystrokesPerMinutes extends Component {
   }
 
   keystrokesInLastMinute() {
-    const textTypedHistory = this.state.textTypedHistory;
+    const keystrokeHistory = this.state.keystrokeHistory;
 
     const lastMinute = moment().subtract(1, 'minute');
-    const textTypedHistoryFiltered = textTypedHistory
+    const keystrokeHistoryFiltered = keystrokeHistory
       .filter(t => lastMinute.isBefore(t.moment))
       .map(t => t.word);
 
-    return textTypedHistoryFiltered.length;
+    return keystrokeHistoryFiltered.length;
   }
 
   kpmInLastMinute() {
-    const textTypedPerMinute = this.keystrokesInLastMinute() / 60;
+    const keystrokesPerMinute = this.keystrokesInLastMinute() / 60;
 
-    return textTypedPerMinute;
+    return keystrokesPerMinute;
   }
 
   kpmMaximum() {
-    if (Object.keys(this.state.textTypedCountByMinute).length === 0) { return 0 }
+    if (Object.keys(this.state.keystrokeCountByMinute).length === 0) { return 0 }
 
-    const textTypedCountByMinute = this.state.textTypedCountByMinute;
+    const keystrokeCountByMinute = this.state.keystrokeCountByMinute;
 
-    const textTypedPerMinute = Object.values(textTypedCountByMinute)
+    const keystrokePerMinute = Object.values(keystrokeCountByMinute)
       .map(keystrokesCount => keystrokesCount / 60)
 
-    const maximumPerMinute = Math.max(...textTypedPerMinute);
+    const maximumPerMinute = Math.max(...keystrokePerMinute);
 
     return maximumPerMinute;
   }
@@ -86,7 +86,7 @@ class KeystrokesPerMinutes extends Component {
   render() {
     return (
       <div>
-        <p><strong>{this.kpmInLastMinute().toFixed(2)}</strong> words per minute currently.</p>
+        <p><strong>{this.kpmInLastMinute().toFixed(2)}</strong> characters per minute currently.</p>
         <p>Your best value is <strong>{this.kpmMaximum().toFixed(2)}</strong> words per minute.</p>
       </div>
     )
