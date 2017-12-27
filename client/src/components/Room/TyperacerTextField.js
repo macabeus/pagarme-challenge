@@ -39,19 +39,23 @@ class TyperacerTextField extends Component {
   }
 
   handleChange(event) {
+    const textChars = this.state.text.split('');
+    const keystrokesHistory = this.state.keystrokeHistory;
+
     const userText = event.target.value;
     const userTextLength = userText.length - 1;
     const newCharacter = userText[userTextLength];
-    const keystrokesHistory = this.state.keystrokeHistory;
 
     const updatedKeystrokesHistory = keystrokesHistory.slice(0, userTextLength);
-    updatedKeystrokesHistory[userTextLength] = {character: newCharacter, moment: moment()}
+    updatedKeystrokesHistory[userTextLength] = {
+      character: newCharacter,
+      correct: textChars[userTextLength] === newCharacter,
+      moment: moment()
+    }
 
     this.setState({
       keystrokeHistory: updatedKeystrokesHistory
     });
-
-    console.log(updatedKeystrokesHistory);
   }
 
   render() {

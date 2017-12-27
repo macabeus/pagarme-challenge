@@ -25,17 +25,26 @@ class KeystrokesPerMinutes extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // Update the counter of how many words was typed in each minute
-    if (nextProps.keystrokeHistory.length === this.state.keystrokeHistory.length) { return }
-
-    const keystrokeCountByMinute = this.state.keystrokeCountByMinute;
-
-    const currentMinute = Math.floor(this.state.seconds / 60);
-    if (keystrokeCountByMinute[currentMinute] === undefined) {
-      keystrokeCountByMinute[currentMinute] = 0;
+    // Update the counter of how many words was typed in each minute, if a new correct char was type
+    const nextHistoryFiltered = nextProps.keystrokeHistory.filter(history => history.correct);
+    const currentHistoryFiltered = this.state.keystrokeHistory.filter(history => history.correct);
+    if (nextHistoryFiltered.length === currentHistoryFiltered.length) {
+      // No new valid characters were entered
+      return
     }
 
-    keystrokeCountByMinute[currentMinute] += 1;
+    // Count how many words was type in each full minute intervals
+    const timeNow = moment();
+    const firstMoment = nextHistoryFiltered[0].moment;
+    const minutes = timeNow.diff(firstMoment, 'minutes');
+
+    const keystrokeCountByMinute = nextHistoryFiltered.reduce((acc, v) => {
+      const interval = v.moment.diff(firstMoment, 'minutes');
+
+      acc[0][interval] += 1;
+
+      return acc
+    }, [ Array.apply(null, {length: minutes + 1}).map(() => 0) ])[0];
 
     //
     this.setState({
@@ -58,8 +67,7 @@ class KeystrokesPerMinutes extends Component {
 
     const lastMinute = moment().subtract(1, 'minute');
     const keystrokeHistoryFiltered = keystrokeHistory
-      .filter(t => lastMinute.isBefore(t.moment))
-      .map(t => t.word);
+      .filter(history => history.correct && lastMinute.isBefore(history.moment))
 
     return keystrokeHistoryFiltered.length;
   }
@@ -68,11 +76,7 @@ class KeystrokesPerMinutes extends Component {
     if (Object.keys(this.state.keystrokeCountByMinute).length === 0) { return 0 }
 
     const keystrokeCountByMinute = this.state.keystrokeCountByMinute;
-
-    const keystrokePerMinute = Object.values(keystrokeCountByMinute)
-      .map(keystrokesCount => keystrokesCount / 60)
-
-    const maximumPerMinute = Math.max(...keystrokePerMinute);
+    const maximumPerMinute = Math.max(...keystrokeCountByMinute);
 
     return maximumPerMinute;
   }
@@ -80,8 +84,8 @@ class KeystrokesPerMinutes extends Component {
   render() {
     return (
       <div>
-        <p><strong>{this.keystrokesInLastMinute()}</strong> characters per minute currently.</p>
-        <p>Your best value is <strong>{this.kpmMaximum().toFixed(2)}</strong> characters per minute.</p>
+        <p><strong>{this.keystrokesInLastMinute()}</strong> characters per minute in the last 60 seconds.</p>
+        <p>Your best value is <strong>{this.kpmMaximum()}</strong> characters per minute.</p>
       </div>
     )
   }
