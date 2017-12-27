@@ -28,7 +28,7 @@ class KeystrokesPerMinutes extends Component {
     // Update the counter of how many words was typed in each minute, if a new correct char was type
     const nextHistoryFiltered = nextProps.keystrokeHistory.filter(history => history.correct);
     const currentHistoryFiltered = this.state.keystrokeHistory.filter(history => history.correct);
-    if (nextHistoryFiltered.length === currentHistoryFiltered.length) {
+    if (nextHistoryFiltered.length === 0 || nextHistoryFiltered.length === currentHistoryFiltered.length) {
       // No new valid characters were entered
       return
     }
