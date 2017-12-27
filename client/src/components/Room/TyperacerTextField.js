@@ -14,16 +14,16 @@ class TyperacerTextField extends Component {
       text: '',
       textTypedHistory: [],
       lastWordIsIncorrect: false,
-      timeout: false
+      enable: false
     }
 
     this.handleChange = this.handleChange.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.timeout !== nextProps.timeout) {
+    if (this.state.enable !== nextProps.enable) {
       this.setState({
-        timeout: nextProps.timeout
+        enable: nextProps.enable
       })
     }
 
@@ -79,7 +79,7 @@ class TyperacerTextField extends Component {
 
   render() {
     return (
-      <FormControl componentClass="textarea" onChange={this.handleChange} disabled={this.state.timeout} />
+      <FormControl componentClass="textarea" onChange={this.handleChange} disabled={!this.state.enable} />
     );
   }
 }

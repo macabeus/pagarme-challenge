@@ -11,23 +11,35 @@ class Countdown extends Component {
 
     this.state = {
       secondsInitial: props.secondsInitial,
+      active: props.active,
       seconds: props.secondsInitial
     }
 
     this.tick = this.tick.bind(this);
-    this.startTimerIfNeed();
   }
 
   componentWillUpdate(nextProps) {
-    if (this.state.secondsInitial === nextProps.secondsInitial) { return }
-
-    if (nextProps.secondsInitial === undefined) {
-      clearInterval(this.interval);
-    } else {
+    if (this.state.secondsInitial !== nextProps.secondsInitial) {
       this.setState({
         secondsInitial: nextProps.secondsInitial,
         seconds: nextProps.secondsInitial
       });
+    }
+
+    if (this.state.active !== nextProps.active) {
+      if (nextProps.active === true) {
+        this.setState({
+          active: true
+        });
+
+        this.startTimerIfNeed()
+      } else {
+        this.setState({
+          active: false
+        });
+
+        clearInterval(this.interval);
+      }
     }
   }
 
@@ -50,6 +62,10 @@ class Countdown extends Component {
 
     if (this.state.seconds <= 0) {
       this.hookOnTimeout();
+
+      this.setState({
+        active: false
+      });
       clearInterval(this.interval);
     }
   }

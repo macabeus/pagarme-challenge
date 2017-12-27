@@ -22,11 +22,11 @@ class RoomPanels extends Component {
     this.socket.hookJoinInRoom = this.handleJoinInRoom.bind(this);
 
     this.state = {
+      running: false,
       text: '',
       secondsInitial: 0,
       textTypedHistory: [],
-      lastWordIsIncorrect: false,
-      timeout: false
+      lastWordIsIncorrect: false
     }
 
     this.handleUpdatedUserList = this.handleUpdatedUserList.bind(this);
@@ -43,9 +43,9 @@ class RoomPanels extends Component {
     NotificationGame.notificationJoinInRoom(isNewRoom);
 
     this.setState({
+      running: true,
       text: roomText,
-      secondsInitial: secondsRemaining,
-      timeout: false
+      secondsInitial: secondsRemaining
     })
   }
 
@@ -64,7 +64,7 @@ class RoomPanels extends Component {
     NotificationGame.notificationTimeout();
 
     this.setState({
-      timeout: true
+      running: false
     })
   }
 
@@ -84,7 +84,7 @@ class RoomPanels extends Component {
           <Panel header="Your text">
             <TyperacerTextField
               text={this.state.text}
-              timeout={this.state.timeout}
+              enable={this.state.running}
               onChange={this.handleOnTyperacerTextFieldChange} />
           </Panel>
         </Col>
@@ -102,6 +102,7 @@ class RoomPanels extends Component {
             <Panel header="Time">
               <Countdown
                 secondsInitial={this.state.secondsInitial}
+                active={this.state.running}
                 onTimeout={this.handleGameTimeout} />
             </Panel>
           </Col>
