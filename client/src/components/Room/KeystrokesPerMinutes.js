@@ -10,7 +10,7 @@ class KeystrokesPerMinutes extends Component {
     this.state = {
       seconds: 0,
       keystrokeHistory: [],
-      keystrokeCountByMinute: {}
+      keystrokeCountByMinute: []
     };
 
     this.tick = this.tick.bind(this);
@@ -84,8 +84,14 @@ class KeystrokesPerMinutes extends Component {
   render() {
     return (
       <div>
-        <p><strong>{this.keystrokesInLastMinute()}</strong> characters per minute in the last 60 seconds.</p>
-        <p>Your best value is <strong>{this.kpmMaximum()}</strong> characters per minute.</p>
+        <p><strong>{this.keystrokesInLastMinute()}</strong> keystrokes per minute in the last 60 seconds.</p>
+        <p>Your best value is <strong>{this.kpmMaximum()}</strong> keystrokes per minute.</p>
+
+        <ul>
+        {this.state.keystrokeCountByMinute.map((v, index) => {
+          return <li key={index}><strong>Minute {index}:</strong> {v} keystrokes</li>
+        })}
+        </ul>
       </div>
     )
   }
