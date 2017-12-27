@@ -1,61 +1,47 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import GameSocket from '../../GameSocket';
 
-import TyperacerText from './TyperacerText';
-import Members from './Members';
-import KeystrokesPerMinutes from './KeystrokesPerMinutes';
-import NotificationGame from './NotificationGame';
-import Countdown from './Countdown';
+import { FormControl } from 'react-bootstrap';
 
-import { Grid, Col, Panel, FormControl } from 'react-bootstrap';
 
 class TyperacerTextField extends Component {
   constructor(props) {
     super(props);
 
-    const roomname = this.props.match.params.roomname;
-    this.username = this.props.match.params.username;
-    this.socket = new GameSocket(roomname, this.username);
-    this.socket.hookJoinInRoom = this.handleJoinInRoom.bind(this);
+    this.hookOnChange = props.onChange;
 
     this.state = {
       text: '',
       textTypedHistory: [],
       lastWordIsIncorrect: false,
-      secondsInitial: 0,
       timeout: false
     }
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleUpdatedUserList = this.handleUpdatedUserList.bind(this);
-    this.handleGameTimeout = this.handleGameTimeout.bind(this);
   }
 
-  componentWillUnmount() {
-    this.socket.socket.disconnect();
-    this.socket.hookNewRoom = undefined;
-  }
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.timeout !== nextProps.timeout) {
+      this.setState({
+        timeout: nextProps.timeout
+      })
+    }
 
-  handleJoinInRoom(isNewRoom, roomText, secondsRemaining) {
-    NotificationGame.notificationJoinInRoom(isNewRoom);
+    if (this.state.text !== nextProps.text) {
+      this.setState({
+        text: nextProps.text,
+        textTypedHistory: [],
+        lastWordIsIncorrect: false
+      })
+    }
 
-    this.setState({
-      text: roomText,
-      secondsInitial: secondsRemaining
-    })
-  }
+    if (
+      (this.state.textTypedHistory.length !== nextState.textTypedHistory.length) ||
+      (this.state.lastWordIsIncorrect !== nextState.lastWordIsIncorrect)
+    ) {
 
-  handleUpdatedUserList(oldUsersList, newUsersList) {
-    this.refs.notification.notificationUpdatedUserList(oldUsersList, newUsersList);
-  }
-
-  handleGameTimeout() {
-    NotificationGame.notificationTimeout();
-
-    this.setState({
-      timeout: true
-    })
+      this.hookOnChange(nextState.textTypedHistory, nextState.lastWordIsIncorrect)
+    }
   }
 
   handleChange(event) {
@@ -93,44 +79,7 @@ class TyperacerTextField extends Component {
 
   render() {
     return (
-      <Grid fluid={true}>
-        <Col xs={4}>
-          <Panel header="Text to type">
-            <TyperacerText
-              text={this.state.text}
-              wordsTypedCount={this.state.textTypedHistory.length}
-              lastWordIsIncorrect={this.state.lastWordIsIncorrect} />
-          </Panel>
-        </Col>
-
-        <Col xs={4}>
-          <Panel header="Your text">
-            <FormControl componentClass="textarea" onChange={this.handleChange} disabled={this.state.timeout} />
-          </Panel>
-        </Col>
-
-        <Col xs={4}>
-          <Col xs={12}>
-            <Panel header="Your score">
-              <KeystrokesPerMinutes socket={this.socket} textTypedHistory={this.state.textTypedHistory} />
-            </Panel>
-          </Col>
-
-          <Col xs={12}>
-            <Panel header="Time">
-              <Countdown secondsInitial={this.state.secondsInitial} onTimeout={this.handleGameTimeout} />
-            </Panel>
-          </Col>
-
-          <Col xs={12}>
-            <Panel header="Ranking">
-              <Members socket={this.socket} username={this.username} onUpdateMemberList={this.handleUpdatedUserList} />
-            </Panel>
-          </Col>
-        </Col>
-
-        <NotificationGame ref='notification'/>
-      </Grid>
+      <FormControl componentClass="textarea" onChange={this.handleChange} disabled={this.state.timeout} />
     );
   }
 }

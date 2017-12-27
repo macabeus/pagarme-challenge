@@ -6,13 +6,14 @@ import 'react-notifications/lib/notifications.css';
 
 import Index from './components/Index/index';
 import NotFound from './components/NotFound/index';
-import TyperacerTextField from './components/Room/TyperacerTextField';
+import RoomPanels from './components/Room/RoomPanels';
+
 
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
       <Route exact path='/' component={Index}/>
-      <Route exact path='/room/:roomname/user/:username' component={TyperacerTextField}/>
+      <Route exact path='/room/:roomname/user/:username' component={RoomPanels}/>
       <Route path='*' component={NotFound}/>
     </Switch>
   </BrowserRouter>, document.getElementById('root')
