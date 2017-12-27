@@ -7,7 +7,7 @@ import Members from './Members';
 import KeystrokesPerMinutes from './KeystrokesPerMinutes';
 import NotificationGame from './NotificationGame';
 import Countdown from './Countdown';
-import TyperacerTextField from './TyperacerTextField';
+import RoomTextField from './RoomTextField';
 
 import { Grid, Col, Panel } from 'react-bootstrap';
 
@@ -79,7 +79,7 @@ class RoomPanels extends Component {
 
         <Col xs={4}>
           <Panel header="Your text">
-            <TyperacerTextField
+            <RoomTextField
               text={this.state.text}
               enable={this.state.running}
               onChange={this.handleOnTyperacerTextFieldChange} />

@@ -4,7 +4,7 @@ import moment from 'moment';
 import { FormControl } from 'react-bootstrap';
 
 
-class TyperacerTextField extends Component {
+class RoomTextField extends Component {
   constructor(props) {
     super(props);
 
@@ -70,4 +70,4 @@ class TyperacerTextField extends Component {
   }
 }
 
-export default TyperacerTextField;
+export default RoomTextField;
