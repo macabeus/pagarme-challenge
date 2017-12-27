@@ -64,12 +64,6 @@ class KeystrokesPerMinutes extends Component {
     return keystrokeHistoryFiltered.length;
   }
 
-  kpmInLastMinute() {
-    const keystrokesPerMinute = this.keystrokesInLastMinute() / 60;
-
-    return keystrokesPerMinute;
-  }
-
   kpmMaximum() {
     if (Object.keys(this.state.keystrokeCountByMinute).length === 0) { return 0 }
 
@@ -86,8 +80,8 @@ class KeystrokesPerMinutes extends Component {
   render() {
     return (
       <div>
-        <p><strong>{this.kpmInLastMinute().toFixed(2)}</strong> characters per minute currently.</p>
-        <p>Your best value is <strong>{this.kpmMaximum().toFixed(2)}</strong> words per minute.</p>
+        <p><strong>{this.keystrokesInLastMinute()}</strong> characters per minute currently.</p>
+        <p>Your best value is <strong>{this.kpmMaximum().toFixed(2)}</strong> characters per minute.</p>
       </div>
     )
   }
