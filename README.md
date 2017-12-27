@@ -3,31 +3,31 @@
   <img src="https://i.imgur.com/5BiORe6.png" width=780>
 </p>
 
->Quem será que digita mais rápido?
+>Who types faster?
 
-# Introdução
+# Introduction
 
-Jogo inspirado no [TypeRacer](http://play.typeracer.com/), com o diferencial em que vence quem digitar a maior quantidade de palavras por minuto (aqui chamado de keystrokes/minuto).
+Game inspired on [TypeRacer](http://play.typeracer.com/), with different rules, quantifying the number of keystrokes/minutes.
 
-Veja a demonstração desse incrível jogo aqui: https://pagarme-challenge.now.sh/
+See the demonstration of this amazing game: https://pagarme-challenge.now.sh/
 
 Features:
-* Crie a sua sala
-* Duração de 5 minutos por partida
-* Ranking por sala
-* [API para obter informações detalhadas das salas](https://pagarme-server-roaslxwrch.now.sh/room/roomname/status)
+* Create your room
+* Duration of 5 minutes per room
+* Ranking per room
+* [API to obtain detailed room information](https://pagarme-server-roaslxwrch.now.sh/room/roomname/status)
 
-# Como jogar
+# How to play
 
-Acesse uma URL com o padrão `/room/nome-da-sala/user/seu-nickcname`. Se a sala ainda não existir, ela será criada e um novo texto aleatório é selecionado. Você precisa copiar esse texto, buscando obter a maior quantidade de keystrokes/minuto possível!
+Access the URL with the pattern `/room/room-name/user/your-nickname`. If the room does not exist yet, it will be created and a new random text will be selected. You need to copy this text, aiming to obtain the greatest number of keystrokes/minute!
 
-A sala tem duração de 5 minutos. Após esse tempo, não é possível continuar a digitar mais.
+The duration of room is 5 minutes. After this time, it is not allowed to type more.
 
-Repasse o nome da sua sala para seus amigos, para competir com eles! Quem será que ficará em primeiro lugar no ranking?
+Share the room name with your friends, to play with them! Who is the fastest typer?
 
-# Como executar localmente
+# How to run
 
-Instale as dependências do projeto:
+Install the dependencies of the project:
 
 ```
 > cd client
@@ -36,14 +36,14 @@ Instale as dependências do projeto:
 > yarn install
 ```
 
-Teste
+Test
 
 ```
 > cd /server
 > yarn test
 ```
 
-Execute o projeto:
+Run the project:
 
 ```
 > cd /server
@@ -52,28 +52,28 @@ Execute o projeto:
 
 # Deploy
 
-Para efetuar o deploy, foi optado pelo serviço [∆ now](https://zeit.co).
+To perform the deploy, the PaaS [∆ now](https://zeit.co) was chosen.
 
-Primeiramente, instale o now e crie a sua conta, caso já não tenha:
+Firstly, install now and create your account:
 
 ```
 > npm install -g now
 > now
 ```
 
-Para efatuar o deploy do projeto, será preciso efetuar o deploy do server e depois o deploy do client, explicado nas seções seguintes.
+To perform the deploy of this project, we need to perform the server deploy and then the client deploy, explained in the following sections. 
 
-## Servidor
+## Server
 
 ```
 > cd server
 > now
 ```
 
-Após finalizar o deploy, o now automaticamente copiará a URL do server para a área de transferência.
-Nós precisaremos desse endereço gerado no próximo passo.
+After ending the deploy, ∆ now will automatically copy the server URL to the clipboard.
+We need this adress in the next step.
 
-## Cliente
+## Client
 
 ```
 > cd client
@@ -81,4 +81,4 @@ Nós precisaremos desse endereço gerado no próximo passo.
 > now
 ```
 
-Pronto! O deploy do pagarme-challenge está concluído!
+Done! The pagarme-challenge deploy is completed!
