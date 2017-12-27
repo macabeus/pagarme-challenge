@@ -1,8 +1,10 @@
 import React  from 'react';
+import RandomRoomLink from '../RandomRoomLink/RandomRoomLink';
+
 
 function App() {
   return (
-    <p>Hey!! You need access a room, for example, <a href="/room/roomname/user/username">this room!</a></p>
+    <p>Hey!! You need access a room, for example, <RandomRoomLink>this room!</RandomRoomLink></p>
   )
 }
 
