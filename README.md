@@ -1,6 +1,6 @@
 <h1 align="center"> Pagar.me Challenge </h1> <br>
 <p align="center">
-  <img src="https://i.imgur.com/5BiORe6.png" width=780>
+  <img src="https://i.imgur.com/EvlbdGO.png" width=780>
 </p>
 
 >Who types faster?
