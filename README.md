@@ -17,6 +17,14 @@ Features:
 * Ranking por sala
 * [API para obter informações detalhadas das salas](https://pagarme-server-roaslxwrch.now.sh/room/roomname/status)
 
+# Como jogar
+
+Acesse uma URL com o padrão `/room/nome-da-sala/user/seu-nickcname`. Se a sala ainda não existir, ela será criada e um novo texto aleatório é selecionado. Você precisa copiar esse texto, buscando obter a maior quantidade de keystrokes/minuto possível!
+
+A sala tem duração de 5 minutos. Após esse tempo, não é possível continuar a digitar mais.
+
+Repasse o nome da sua sala para seus amigos, para competir com eles! Quem será que ficará em primeiro lugar no ranking?
+
 # Como executar localmente
 
 Instale as dependências do projeto:
