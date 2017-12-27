@@ -4,7 +4,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import 'react-notifications/lib/notifications.css';
 
-import Index from './components/Index/index';
+import IndexMessage from './components/IndexMessage/IndexMessage';
 import NotFound from './components/NotFound/index';
 import RoomPanels from './components/Room/RoomPanels';
 
@@ -12,7 +12,7 @@ import RoomPanels from './components/Room/RoomPanels';
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      <Route exact path='/' component={Index}/>
+      <Route exact path='/' component={IndexMessage}/>
       <Route exact path='/room/:roomname/user/:username' component={RoomPanels}/>
       <Route path='*' component={NotFound}/>
     </Switch>
