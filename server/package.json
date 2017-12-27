@@ -10,6 +10,7 @@
   },
   "scripts": {
     "start": "concurrently \"yarn server\" \"cd ../client && yarn start\"",
+    "now-start": "node server.js",
     "server": "nodemon server.js",
     "client": "cd client && yarn start",
     "lint": "eslint ."

@@ -12,12 +12,19 @@
     "moment-duration-format": "2.1.0",
     "socket.io-client": "2.0.4",
     "react-bootstrap": "0.31.5",
-    "react-notifications": "1.4.3"
+    "react-notifications": "1.4.3",
+    "serve": "6.4.3"
   },
   "scripts": {
     "start": "react-scripts start",
+    "now-start": "serve --single ./build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "now": {
+    "env": {
+      "REACT_APP_WEB_SOCKET_ADDRESS": "@websocketaddress"
+    }
   }
 }

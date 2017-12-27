@@ -1,8 +1,10 @@
 import io from 'socket.io-client';
 
+import config from './config';
+
 class GameSocket {
   constructor(roomName, userName) {
-    this.socket = io('http://localhost:3001');
+    this.socket = io(config.webSocketAddress);
 
     this.socket.on('connected', () => {
       console.log('socket connected');
