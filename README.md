@@ -1,4 +1,4 @@
-<h1 align="center"> Pagar.me Challenge </h1> <br>
+<h1 align="center"> KeystrokesRace </h1> <br>
 <p align="center">
   <img src="https://i.imgur.com/EvlbdGO.png" width=780>
 </p>
@@ -9,13 +9,13 @@
 
 Game inspired on [TypeRacer](http://play.typeracer.com/), with different rules, quantifying the number of keystrokes/minutes.
 
-See the demonstration of this amazing game: https://pagarme-challenge.now.sh/
+See the demonstration of this amazing game: https://keystrokesrace.now.sh/
 
 Features:
 * Create your room
 * Duration of 5 minutes per room
 * Ranking per room
-* [API to obtain detailed room information](https://pagarme-server-roaslxwrch.now.sh/room/roomname/status)
+* [API to obtain detailed room information](https://keystrokesrace-server.now.sh/room/roomname/status)
 
 # How to play
 
@@ -81,4 +81,4 @@ We need this adress in the next step.
 > now
 ```
 
-Done! The pagarme-challenge deploy is completed!
+Done! The KeystrokesRace deploy is completed!
