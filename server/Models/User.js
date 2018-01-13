@@ -1,6 +1,3 @@
-'use strict';
-
-
 class User {
   constructor() {
     this.keystrokesInLastMinute = 0;
