@@ -7,23 +7,24 @@
 
 # Introduction
 
-Game inspired on [TypeRacer](http://play.typeracer.com/), with different rules, quantifying the number of keystrokes/minutes.
+Game inspired on [TypeRacer](http://play.typeracer.com/), with different rules, quantifying the number of keystrokes per minute.
 
 See the demonstration of this amazing game: https://keystrokesrace.now.sh/
 
 Features:
-* Create your room
-* Duration of 5 minutes per room
+* Create your room (duration of 5 minutes per room)
 * Ranking per room
 * [API to obtain detailed room information](https://keystrokesrace-server.now.sh/room/roomname/status)
 
 # How to play
 
-Access the URL with the pattern `/room/room-name/user/your-nickname`. If the room does not exist yet, it will be created and a new random text will be selected. You need to copy this text, aiming to obtain the greatest number of keystrokes/minute!
+Access the URL with the pattern `/room/room-name/user/your-nickname`. If the room does not yet exist, it will be then created and a new random text will be selected. You will need to copy this text, aiming to obtain the greatest number of keystrokes per minute!
 
-The duration of room is 5 minutes. After this time, it is not allowed to type more.
+The total duration of a room is 5 minutes. After this time expires, it is not allowed to type anymore.
 
-Share the room name with your friends, to play with them! Who is the fastest typer?
+Share the room name with your friends so you can play with them!
+
+Who is the fastest typer?
 
 # How to run
 
@@ -52,16 +53,16 @@ Run the project:
 
 # Deploy
 
-To perform the deploy, the PaaS [∆ now](https://zeit.co) was chosen.
+The PaaS [∆ now](https://zeit.co) was chosen to perform the deploy of the project:
 
-Firstly, install now and create your account:
+Firstly, install now and create an account:
 
 ```
 > npm install -g now
 > now
 ```
 
-To perform the deploy of this project, we need to perform the server deploy and then the client deploy, explained in the following sections. 
+To perform the deploy of this project, you will need to perform the server deploy and then the client deploy, explained in the following sections:
 
 ## Server
 
@@ -71,7 +72,7 @@ To perform the deploy of this project, we need to perform the server deploy and 
 ```
 
 After ending the deploy, ∆ now will automatically copy the server URL to the clipboard.
-We need this adress in the next step.
+We need this address in the next step.
 
 ## Client
 
